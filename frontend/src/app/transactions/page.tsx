@@ -7,26 +7,22 @@ import ErrorMessage from "../components/ErrorMessage";
 import TransactionTable from "../components/TransactionTable";
 import PageTitle from "../components/PageTitle";
 
-import { api } from "../../../lib/api";
 import { ITransaction } from "../../../lib/types";
 import { useDataLoader } from "@/hooks/useDataLoader";
 import { MyInput } from "../components/MyFrom/MyInput";
+import { fetchTransactions } from "@/service/service";
 
 export default function TransactionsPage() {
   const [from, setFrom] = useState("");
   const [to, setTo] = useState("");
 
 
-  const fetchTransactions = useCallback(async () => {
-    let url = "/transactions/";
-    const params = [];
-    if (from) params.push(`from=${from}`);
-    if (to) params.push(`to=${to}`);
-    if (params.length) url += "?" + params.join("&");
-    return await api.get(url) as ITransaction[];
+  const fetchTransactionsCb = useCallback(async () => {
+    const data = await fetchTransactions(from, to);
+    return data;
   }, [from, to]);
 
-  const { data: transactions, state } = useDataLoader<ITransaction[]>(fetchTransactions, []);
+  const { data: transactions, state } = useDataLoader<ITransaction[]>(fetchTransactionsCb, []);
 
   if (state === "loading") {
     return <Loader size="lg" />;

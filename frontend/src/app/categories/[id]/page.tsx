@@ -11,17 +11,17 @@ import TableView from "@/app/components/TableView";
 import { useParams } from "next/navigation";
 import { useDataLoader } from "@/hooks/useDataLoader";
 import { ICategory } from "../../../../lib/types";
-import { api } from "../../../../lib/api";
+import { fetchCategory } from "@/service/service";
 
 const CreateCategory = () => {
   const params = useParams<{ id: string }>();
   const id: string = params.id;
 
-  const fetchCategory = useCallback(async () => {
-    const data = await api.get(`/categories/${id}`);
-    return data as ICategory;
+  const fetchCategoryCb = useCallback(async () => {
+    const data = fetchCategory(id);
+    return data;
   }, [id]);
-  const { data: category, state } = useDataLoader<ICategory>(fetchCategory, null);
+  const { data: category, state } = useDataLoader<ICategory>(fetchCategoryCb, null);
 
   if (state === "loading" || state === "idle") {
     return <Loader />;

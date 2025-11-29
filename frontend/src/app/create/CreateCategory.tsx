@@ -2,10 +2,11 @@
 "use client"
 
 import React, { useState } from "react";
-import { ConfirmationModal } from "../components/Modal";
-import { api } from "../../../lib/api";
-import { IOption, MyFormProps } from "../components/MyFrom/types";
 import MyForm from "../components/MyFrom";
+
+import { ConfirmationModal } from "../components/Modal";
+import { IOption, MyFormProps } from "../components/MyFrom/types";
+import { createCategory } from "@/service/service";
 
 const CreateCategoryForm: Omit<MyFormProps, "value" | "onChange" | "onSubmit" | "options"> = {
   buttonText: "Create",
@@ -47,12 +48,8 @@ const CreateCategory = () => {
     setOpenModal(true);
   };
 
-  const createCategory = async () => {
-    try {
-      await api.post('/categories/', value);
-    } catch (error) {
-      console.log("Failed to create category", error);
-    }
+  const createCategoryCb = async () => {
+    await createCategory(value);
   };
 
   const options: IOption[] = [
@@ -78,7 +75,7 @@ const CreateCategory = () => {
         body={<CategoryModalBody name={value["name"]} type={value["category_type"]} />}
         onCancel={() => setOpenModal(false)}
         setOpen={setOpenModal}
-        onConfirm={createCategory}
+        onConfirm={createCategoryCb}
       />
     </React.Fragment>
   );

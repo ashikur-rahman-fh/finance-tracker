@@ -4,8 +4,8 @@ import React, { useState } from "react";
 import MyForm from "../components/MyFrom";
 
 import { ConfirmationModal } from "../components/Modal";
-import { api } from "../../../lib/api";
 import { IOption, MyFormProps } from "../components/MyFrom/types";
+import { createAccount } from "@/service/service";
 
 const CreateAccountForm: Omit<MyFormProps, "value" | "onChange" | "onSubmit" | "options"> = {
   buttonText: "Create",
@@ -48,12 +48,8 @@ const CreateAccount = () => {
     setOpenModal(true);
   };
 
-  const createAccount = async () => {
-    try {
-      await api.post('/accounts/', value);
-    } catch (error) {
-      console.log("Failed to create account", error);
-    }
+  const createAccountCb = async () => {
+    await createAccount(value);
   };
 
   const options: IOption[] = [
@@ -79,7 +75,7 @@ const CreateAccount = () => {
         body={<AccModalBody name={value["name"]} type={value["account_type"]} />}
         onCancel={() => setOpenModal(false)}
         setOpen={setOpenModal}
-        onConfirm={createAccount}
+        onConfirm={createAccountCb}
       />
     </React.Fragment>
   );

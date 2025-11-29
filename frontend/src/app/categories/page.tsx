@@ -2,18 +2,15 @@
 
 import React from "react";
 
-import { useDataLoader } from "@/hooks/useDataLoader";
-import { ICategory } from "../../../lib/types";
 import Loader from "../components/Loader";
-
-import { api } from "../../../lib/api";
 import ErrorMessage from "../components/ErrorMessage";
 import CategoryCard from "../components/CategoryCard";
 import PageTitle from "../components/PageTitle";
 
-const fetchCategories = async (): Promise<ICategory[]> => {
-  return await api.get('/categories');
-};
+import { useDataLoader } from "@/hooks/useDataLoader";
+import { ICategory } from "../../../lib/types";
+import { fetchCategories } from "@/service/service";
+
 
 const CategoryPage = () => {
   const { data: categories, state } = useDataLoader<ICategory[]>(fetchCategories, []);

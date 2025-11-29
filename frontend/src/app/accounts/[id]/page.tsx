@@ -11,18 +11,18 @@ import TableView from "@/app/components/TableView";
 import { useParams } from "next/navigation";
 import { useDataLoader } from "@/hooks/useDataLoader";
 import { IAccount } from "../../../../lib/types";
-import { api } from "../../../../lib/api";
+import { fetchAccount } from "@/service/service";
 
 const Account = () => {
   const params = useParams<{id: string}>();
   const id: string = params.id;
 
-  const fetchAccount = useCallback(async () => {
-    const data = await api.get(`/accounts/${id}/`);
-    return data as IAccount;
+  const fetchAccountCb = useCallback(async () => {
+    const account = await fetchAccount(id);
+    return account;
   }, [id]);
 
-  const { data : account, state } = useDataLoader<IAccount> (fetchAccount, null);
+  const { data : account, state } = useDataLoader<IAccount> (fetchAccountCb, null);
 
   if (state === "loading" || state === "idle") {
     return <Loader />;

@@ -11,18 +11,18 @@ import TableView from "@/app/components/TableView";
 import { useParams } from "next/navigation";
 import { useDataLoader } from "@/hooks/useDataLoader";
 import { ITransaction } from "../../../../lib/types";
-import { api } from "../../../../lib/api";
+import { fetchTransaction } from "@/service/service";
 
 const CreateCategory = () => {
   const params = useParams<{ id: string }>();
   const id: string = params.id;
 
-  const fetchTransaction = useCallback(async () => {
-    const response = await api.get(`/transactions/${id}`);
-    return response as ITransaction;
+  const fetchTransactionCb = useCallback(async () => {
+    const data = await fetchTransaction(id);
+    return data;
   }, [id]);
 
-  const { data: transaction, state } = useDataLoader<ITransaction>(fetchTransaction, null);
+  const { data: transaction, state } = useDataLoader<ITransaction>(fetchTransactionCb, null);
 
   if (state === "loading" || state === "idle") {
     return <Loader />;

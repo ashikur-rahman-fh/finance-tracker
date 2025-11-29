@@ -1,17 +1,16 @@
 "use client";
+
 import React from "react";
-import { api } from "../../../lib/api";
-import { IAccount } from "../../../lib/types";
+
+import PageTitle from "../components/PageTitle";
 import Loader from "../components/Loader";
 import ErrorMessage from "../components/ErrorMessage";
 import AccountTable from "../components/AccountTable";
+
 import { useRouter } from "next/navigation";
 import { useDataLoader } from "@/hooks/useDataLoader";
-import PageTitle from "../components/PageTitle";
-
-export const fetchAccounts = async () => {
-  return await api.get('/accounts') as IAccount[];
-};
+import { fetchAccounts } from "@/service/service";
+import { IAccount } from "../../../lib/types";
 
 export default function AccountsPage() {
   const {data, state} = useDataLoader<IAccount[]>(fetchAccounts, []);

@@ -4,12 +4,11 @@
 import React, { useMemo, useState } from "react";
 import MyForm from "../components/MyFrom";
 
-import { api } from "../../../lib/api";
-
 import { ConfirmationModal } from "../components/Modal";
 import { ICondition, IOption, MyFormProps } from "../components/MyFrom/types";
 import { useDataLoader } from "@/hooks/useDataLoader";
 import { IAccount, ICategory } from "../../../lib/types";
+import { createTransaction, fetchAccounts, fetchCategories } from "@/service/service";
 
 const CreateAccountForm: Omit<MyFormProps, "value" | "onChange" | "onSubmit" | "options"> = {
   buttonText: "Create",
@@ -85,24 +84,20 @@ const TransactionModalBody: React.FC<{ value: Record<string, string> }> = ({ val
   );
 };
 
-const loadAccount = async () => {
-  const data: IAccount[] = await api.get("/accounts/");
-  return data;
-};
-
-const loadCategory = async () => {
-  const data: ICategory[] = await api.get("/categories/");
-  return data;
-};
-
-const CreateAccount = () => {
+const CreateTransaction = () => {
   const [value, setValue] = useState<Record<string, string>>({ transaction_type: "EXPENSE" });
-  const { data : accounts } = useDataLoader(loadAccount, []);
-  const { data : categories } = useDataLoader(loadCategory, []);
+  const { data : accounts } = useDataLoader<IAccount[]>(fetchAccounts, []);
+  const { data : categories } = useDataLoader<ICategory[]>(fetchCategories, []);
   const accountOpt = useMemo(() => {
+    if (!accounts) {
+      return [];
+    }
     return accounts.map((account) => account.name);
   }, [accounts]);
   const categoryOpt = useMemo(() => {
+    if (!categories) {
+      return [];
+    }
     return categories.map((category) => category.name);
   }, [categories]);
   const [openModal, setOpenModal] = useState<boolean>(false);
@@ -114,12 +109,8 @@ const CreateAccount = () => {
     setOpenModal(true);
   };
 
-  const createTransactions = async () => {
-    try {
-      await api.post('/transactions/', {...value } );
-    } catch (error) {
-      console.log("Failed to create account", error);
-    }
+  const createTransactionsCb = async () => {
+    await createTransaction(value);
   };
 
   const options: IOption[] = [
@@ -169,10 +160,10 @@ const CreateAccount = () => {
         body={<TransactionModalBody value={value} />}
         onCancel={() => setOpenModal(false)}
         setOpen={setOpenModal}
-        onConfirm={createTransactions}
+        onConfirm={createTransactionsCb}
       />
     </React.Fragment>
   );
 };
 
-export default CreateAccount;
+export default CreateTransaction;
