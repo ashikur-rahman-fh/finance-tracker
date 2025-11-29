@@ -19,7 +19,7 @@ export default function AccountsPage() {
 
 
   if (state === "loading") return <Loader size="lg" />;
-  if (state === "error") return <ErrorMessage message={"Failed to load accounts"} />;
+  if (state === "error" || data === null) return <ErrorMessage message={"Failed to load accounts"} />;
 
   return (
     <div className="container mx-auto">

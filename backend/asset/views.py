@@ -123,7 +123,7 @@ class TransactionDetailAPIView(APIView):
 
     def get(self, request, pk):
         transaction = self.get_object(pk)
-        serializer = TransactionSerializer(transaction)
+        serializer = TransactionROSerializer(transaction)
         return Response(serializer.data)
 
     def put(self, request, pk):

@@ -27,10 +27,11 @@ export interface ITransaction {
   transaction_type: string;
   amount: string;
   currency: string;
+  note?: string;
   description?: string;
   date: string;
   to_account?: IAccount;
-  category?: ICategory;
+  category: ICategory;
   created_at: string;
   updated_at: string;
   is_active: boolean;

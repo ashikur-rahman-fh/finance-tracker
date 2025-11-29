@@ -21,7 +21,7 @@ const CategoryPage = () => {
   if (state === "loading") {
     return <Loader size="lg" />
   }
-  if (state === "error") {
+  if (state === "error" || categories === null) {
     return <ErrorMessage message="Failed to load categories" />
   }
 

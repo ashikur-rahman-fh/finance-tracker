@@ -1,11 +1,24 @@
+"use client";
+
 import React from "react";
 
-import { Account } from "../../../lib/types";
+import { IAccount } from "../../../lib/types";
+import { useRouter } from "next/navigation";
 
-const AccountCard = ({ account }: { account: Partial<Account> }) => {
+const AccountCard = ({ account }: { account: Partial<IAccount> }) => {
+  const router = useRouter();
+  const handleClick = () => {
+    if (account?.id) {
+      router.push(`accounts/${account.id}`);
+    }
+  };
+
   return (
     <React.Fragment>
-      <div className="rounded-2xl border-2 border-emerald-300 bg-emerald-50 shadow-xl h-fit w-[400px] p-2">
+      <div
+        className="rounded-2xl border-2 border-emerald-300 bg-emerald-50 shadow-xl h-fit w-[400px] p-2 cursor-pointer"
+        onClick={handleClick}
+      >
         <h1 className="font-semibold text-lg text-center">{account.name}</h1>
         <div className="flex items-center justify-center my-2">
           <pre>

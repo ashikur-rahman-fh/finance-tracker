@@ -76,7 +76,7 @@ class TransactionSerializer(serializers.ModelSerializer):
         model = Transaction
         fields = '__all__'
         read_only_fields = ('id', 'created_at', 'updated_at', 'is_active')
-        depth = 1
+        depth = 2
 
     def validate(self, data):
         transaction_type = data.get('transaction_type')
@@ -98,6 +98,6 @@ class TransactionSerializer(serializers.ModelSerializer):
 class TransactionROSerializer(serializers.ModelSerializer):
     class Meta:
         model = Transaction
-        fields = ['transaction_type', 'amount', 'currency', 'date', 'account', 'to_account']
+        fields = ['id', 'transaction_type', 'amount', 'currency', 'date', 'account', 'to_account', 'note', 'description', 'category']
         read_only_fields = ['transaction_type', 'amount', 'currency', 'date', 'account', 'to_account']
-        depth = 1
+        depth = 2

@@ -4,10 +4,10 @@ type LoaderState = "idle" | "loading" | "success" | "error";
 
 export const useDataLoader = <T> (
   getDataFn: () => Promise<T>,
-  defaultValue: T
+  defaultValue: T | null
 ) => {
   const [state, setState] = useState<LoaderState>("idle");
-  const [data, setData] = useState<T>(defaultValue);
+  const [data, setData] = useState<T | null>(defaultValue);
 
   useEffect(() => {
     (async () => {

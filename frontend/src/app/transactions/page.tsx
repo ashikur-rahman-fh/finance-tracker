@@ -31,7 +31,7 @@ export default function TransactionsPage() {
   if (state === "loading") {
     return <Loader size="lg" />;
   }
-  if (state === "error") {
+  if (state === "error" || transactions === null) {
     return <ErrorMessage message={"Failed to load transactions"} />;
   }
 
@@ -56,7 +56,7 @@ export default function TransactionsPage() {
         <button
           className="h-full flex items-center justify-center rounded-md border border-violet-300 bg-violet-50 pt-2 pb-1 px-2 cursor-pointer hover:border-violet-500 hover:bg-violet-500 hover:text-white"
           type="button"
-          onClick={() => {fetchTransactions}}
+          onClick={() => fetchTransactions}
         >
           Filter
         </button>
