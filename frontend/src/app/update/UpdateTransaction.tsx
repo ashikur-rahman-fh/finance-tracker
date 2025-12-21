@@ -7,12 +7,12 @@ import MyForm from "../components/MyFrom";
 import { ConfirmationModal } from "../components/Modal";
 import { ICondition, IOption, MyFormProps } from "../components/MyFrom/types";
 import { useDataLoader } from "@/hooks/useDataLoader";
-import { IAccount, ICategory } from "../../../lib/types";
+import { IAccount, ICategory, ITransaction } from "../../../lib/types";
 import { createTransaction, fetchAccounts, fetchCategories } from "@/service/service";
 
 const CreateAccountForm: Omit<MyFormProps, "value" | "onChange" | "onSubmit" | "options"> = {
-  buttonText: "Create",
-  title: "Create Transaction",
+  buttonText: "Update",
+  title: "Modify Transaction",
   fields: [
     {
       name: "amount",
@@ -70,7 +70,7 @@ const TransactionModalBody: React.FC<{ value: Record<string, string> }> = ({ val
   } = value;
   return (
     <React.Fragment>
-      <h1>Proceed with creating transaction?</h1>
+      <h1>Proceed with modifying transaction?</h1>
       <pre>
         Amount: {amount}<br />
         Date: {date}<br />
@@ -84,8 +84,37 @@ const TransactionModalBody: React.FC<{ value: Record<string, string> }> = ({ val
   );
 };
 
-const CreateTransaction = () => {
-  const [value, setValue] = useState<Record<string, string>>({ transaction_type: "EXPENSE" });
+const UpdateTransaction: React.FC<{ old : ITransaction }> = ({ old }) => {
+  const formatDate = (d: string | Date | number | null | undefined): string => {
+    if (!d) return "";
+    const dt = typeof d === "string" && d.includes("T") ? new Date(d) : new Date(d);
+    return isNaN(dt.getTime()) ? String(d) : dt.toISOString().slice(0, 10);
+  };
+
+  const isAccountObject = (obj: unknown): obj is IAccount => {
+    return typeof obj === "object" && obj !== null && "name" in obj;
+  }
+
+  const isCategoryObject = (obj: unknown): obj is ICategory => {
+    return typeof obj === "object" && obj !== null && "name" in obj;
+  }
+
+  const acc = old?.account;
+  const toAcc = old?.to_account;
+  const cat = old?.category;
+
+  const initialValue: Record<string, string> = {
+    amount: old?.amount != null ? String(old.amount) : "",
+    date: formatDate(old?.date),
+    transaction_type: old?.transaction_type ?? "",
+    account: typeof acc === "string" ? acc : (isAccountObject(acc) ? acc.name : ""),
+    to_account: typeof toAcc === "string" ? toAcc : (isAccountObject(toAcc) ? toAcc.name : ""),
+    category: typeof cat === "string" ? cat : (isCategoryObject(cat) ? cat.name : ""),
+    note: old?.note ?? "",
+    description: old?.description ?? "",
+  };
+
+  const [value, setValue] = useState<Record<string, string>>(initialValue);
   const { data : accounts } = useDataLoader<IAccount[]>(fetchAccounts, []);
   const { data : categories } = useDataLoader<ICategory[]>(fetchCategories, []);
   const accountOpt = useMemo(() => {
@@ -167,4 +196,4 @@ const CreateTransaction = () => {
   );
 };
 
-export default CreateTransaction;
+export default UpdateTransaction;

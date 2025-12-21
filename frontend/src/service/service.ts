@@ -21,6 +21,14 @@ export const createAccount = async (value: Partial<IAccount>) : Promise<IAccount
   return null;
 };
 
+export const deleteAccount = async (id: string) : Promise<void> => {
+  try {
+    await api.delete(`/accounts/${id}/`);
+  } catch (error) {
+    console.log(error);
+  }
+};
+
 export const fetchCategories = async () : Promise<ICategory[]> => {
   const data = await api.get('/categories/');
   return data as ICategory[];
@@ -29,6 +37,15 @@ export const fetchCategories = async () : Promise<ICategory[]> => {
 export const fetchCategory = async (id: string) : Promise<ICategory> => {
   const data = await api.get(`/categories/${id}/`);
   return data as ICategory;
+};
+
+
+export const deleteCategory = async (id: string) : Promise<void> => {
+  try {
+    await api.delete(`/categories/${id}/`);
+  } catch (error) {
+    console.log(error);
+  }
 };
 
 export const createCategory = async (value: Partial<ICategory>) : Promise<ICategory | null> => {
@@ -66,4 +83,12 @@ export const createTransaction = async (value: Partial<ITransaction>) : Promise<
     console.log(error);
   }
   return null;
+};
+
+export const deleteTransaction = async (id: string) : Promise<void> => {
+  try {
+    await api.delete(`/transactions/${id}/`);
+  } catch (error) {
+    console.log(error);
+  }
 };
