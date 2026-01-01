@@ -6,6 +6,7 @@ import { DeleteForever } from "@mui/icons-material";
 import { useRouter, usePathname } from "next/navigation";
 import { ConfirmationModal } from "./Modal";
 import { deleteAccount, deleteCategory, deleteTransaction } from "@/service/service";
+import { getPostDeleteUri } from "../../../lib/utils";
 
 type deleteItem = "account" | "category" | "transaction" | null;
 
@@ -58,18 +59,37 @@ const DetailCard: React.FC<{ children: React.ReactNode }> = ({ children }) => {
   };
 
   const onConfirm = () => {
+    console.log("hello world");
     const id = getId(pathname);
     const item = getItem(pathname);
     switch(item) {
-      case "account":
-        deleteAccount(id);
+      case "account": {
+        try {
+          deleteAccount(id);
+          router.replace(getPostDeleteUri(pathname));
+        } catch (error) {
+          console.log(error);
+        }
         break;
-      case "category":
-        deleteCategory(id);
+      }
+      case "category": {
+        try {
+          deleteCategory(id);
+          router.replace(getPostDeleteUri(pathname));
+        } catch (error) {
+          console.log(error);
+        }
         break;
-      case "transaction":
-        deleteTransaction(id);
+      }
+      case "transaction": {
+        try {
+          deleteTransaction(id);
+          router.replace(getPostDeleteUri(pathname));
+        } catch (error) {
+          console.log(error);
+        }
         break;
+      }
       default:
         break;
     };

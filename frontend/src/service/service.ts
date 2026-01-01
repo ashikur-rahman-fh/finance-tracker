@@ -26,6 +26,7 @@ export const deleteAccount = async (id: string) : Promise<void> => {
     await api.delete(`/accounts/${id}/`);
   } catch (error) {
     console.log(error);
+    throw Error("Cannot delete account");
   }
 };
 
@@ -45,6 +46,7 @@ export const deleteCategory = async (id: string) : Promise<void> => {
     await api.delete(`/categories/${id}/`);
   } catch (error) {
     console.log(error);
+    throw Error("Cannot delete category");
   }
 };
 
@@ -90,5 +92,36 @@ export const deleteTransaction = async (id: string) : Promise<void> => {
     await api.delete(`/transactions/${id}/`);
   } catch (error) {
     console.log(error);
+    throw Error("Cannot delete transaction");
+  }
+};
+
+export const updateAccount = async (id: string, value: Partial<IAccount>): Promise<IAccount | null> => {
+  try {
+    const data = await api.put(`/accounts/${id}/`, value);
+    return data as IAccount;
+  } catch (error) {
+    console.error("updateAccount error:", error);
+    throw Error("Cannot update account");
+  }
+};
+
+export const updateCategory = async (id: string, value: Partial<ICategory>): Promise<ICategory | null> => {
+  try {
+    const data = await api.put(`/categories/${id}/`, value);
+    return data as ICategory;
+  } catch (error) {
+    console.error("updateCategory error:", error);
+    throw Error("Cannot update category");
+  }
+};
+
+export const updateTransaction = async (id: string, value: Partial<ITransaction>): Promise<ITransaction | null> => {
+  try {
+    const data = await api.put(`/transactions/${id}/`, value);
+    return data as ITransaction;
+  } catch (error) {
+    console.error("updateTransaction error:", error);
+    throw Error("Cannot update transaction");
   }
 };

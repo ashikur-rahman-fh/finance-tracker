@@ -8,7 +8,9 @@ import { ConfirmationModal } from "../components/Modal";
 import { ICondition, IOption, MyFormProps } from "../components/MyFrom/types";
 import { useDataLoader } from "@/hooks/useDataLoader";
 import { IAccount, ICategory, ITransaction } from "../../../lib/types";
-import { createTransaction, fetchAccounts, fetchCategories } from "@/service/service";
+import { fetchAccounts, fetchCategories, updateTransaction } from "@/service/service";
+import { usePathname, useRouter } from "next/navigation";
+import { getPostUpdateUri } from "../../../lib/utils";
 
 const CreateAccountForm: Omit<MyFormProps, "value" | "onChange" | "onSubmit" | "options"> = {
   buttonText: "Update",
@@ -117,6 +119,9 @@ const UpdateTransaction: React.FC<{ old : ITransaction }> = ({ old }) => {
   const [value, setValue] = useState<Record<string, string>>(initialValue);
   const { data : accounts } = useDataLoader<IAccount[]>(fetchAccounts, []);
   const { data : categories } = useDataLoader<ICategory[]>(fetchCategories, []);
+
+  const pathname = usePathname();
+  const router = useRouter();
   const accountOpt = useMemo(() => {
     if (!accounts) {
       return [];
@@ -139,8 +144,13 @@ const UpdateTransaction: React.FC<{ old : ITransaction }> = ({ old }) => {
     setOpenModal(true);
   };
 
-  const createTransactionsCb = async () => {
-    await createTransaction(value);
+  const updateTransactionsCb = async () => {
+    try {
+      await updateTransaction(old.id, value);
+      router.replace(getPostUpdateUri(pathname));
+    } catch (error) {
+      console.log(error);
+    }
   };
 
   const options: IOption[] = [
@@ -190,7 +200,7 @@ const UpdateTransaction: React.FC<{ old : ITransaction }> = ({ old }) => {
         body={<TransactionModalBody value={value} />}
         onCancel={() => setOpenModal(false)}
         setOpen={setOpenModal}
-        onConfirm={createTransactionsCb}
+        onConfirm={updateTransactionsCb}
       />
     </React.Fragment>
   );
